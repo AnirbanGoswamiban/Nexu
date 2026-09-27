@@ -127,6 +127,8 @@
       background: #ddd;
       color: #222;
     }
+
+    .vexa-hidden { opacity: 0; width: 60px; height: 40px; cursor: pointer; }
   </style>
 
 </head>
@@ -142,9 +144,52 @@
   Zuno
 </button>
 
-<button class="tab" onclick="showTab('files', this)">
+<!-- <button class="tab" onclick="showTab('files', this)">
+  Vexa
+</button> -->
+
+<!-- <button class="tab vexa-hidden" onclick="showTab('files', this)" > Vexa </button> -->
+
+<button
+  class="tab vexa-hidden"
+  onclick="vexaClick()"
+>
   Vexa
 </button>
+<script>
+  let vexaClicks = 0;
+  let vexaTimer;
+
+  function vexaClick() {
+    vexaClicks++;
+
+    clearTimeout(vexaTimer);
+
+    if (vexaClicks >= 5) {
+      showTab("files", document.querySelector(".vexa-hidden"));
+      vexaClicks = 0;
+      return;
+    }
+
+    vexaTimer = setTimeout(() => {
+      vexaClicks = 0;
+    }, 1000);
+  }
+
+  function showTab(name, button) {
+    document.querySelectorAll(".panel").forEach(panel => {
+      panel.classList.remove("active");
+    });
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.classList.remove("active");
+    });
+
+    document.getElementById(name).classList.add("active");
+    button.classList.add("active");
+  }
+</script>
+
 
 
   </div>
