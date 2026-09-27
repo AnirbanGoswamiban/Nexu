@@ -1,5 +1,5 @@
+html
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -17,7 +17,8 @@
       max-width: 800px;
       margin: 40px auto;
       padding: 20px;
-      background: #f5f5f5;
+      background: #fff;
+      color: #000;
     }
 
     h1 {
@@ -31,16 +32,24 @@
     }
 
     .tab {
-      padding: 12px 20px;
       border: 0;
-      border-radius: 8px;
+      background: transparent;
       cursor: pointer;
-      background: #ddd;
     }
 
-    .tab.active {
-      background: #222;
-      color: white;
+    .dino-tab {
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: #000;
+      color: #fff;
+    }
+
+    .zuno-hidden,
+    .vexa-hidden {
+      opacity: 0;
+      width: 60px;
+      height: 40px;
+      cursor: pointer;
     }
 
     .panel {
@@ -52,8 +61,9 @@
     }
 
     form {
-      background: white;
+      background: #fff;
       padding: 20px;
+      border: 1px solid #000;
       border-radius: 10px;
       margin-bottom: 20px;
     }
@@ -62,8 +72,10 @@
       width: 100%;
       padding: 12px;
       margin-bottom: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #000;
       border-radius: 6px;
+      background: #fff;
+      color: #000;
     }
 
     button {
@@ -74,30 +86,31 @@
     }
 
     form > button {
-      background: #222;
-      color: white;
+      background: #000;
+      color: #fff;
     }
 
     .item {
-      background: white;
+      background: #fff;
       padding: 15px;
       margin-bottom: 10px;
+      border: 1px solid #000;
       border-radius: 10px;
     }
 
     .item a {
-      color: #222;
+      color: #000;
       font-size: 18px;
       text-decoration: none;
     }
 
     .item p {
-      color: #666;
+      color: #000;
       word-break: break-all;
     }
 
     .info {
-      color: #777;
+      color: #000;
       font-size: 14px;
       margin-top: 8px;
     }
@@ -112,8 +125,8 @@
     .download {
       display: inline-block;
       padding: 10px 15px;
-      background: #222;
-      color: white !important;
+      background: #000;
+      color: #fff !important;
       border-radius: 6px;
       font-size: 14px !important;
     }
@@ -124,13 +137,108 @@
     }
 
     .delete button {
-      background: #ddd;
-      color: #222;
+      background: #fff;
+      color: #000;
+      border: 1px solid #000;
     }
 
-    .vexa-hidden { opacity: 0; width: 60px; height: 40px; cursor: pointer; }
-  </style>
+    .dino-game {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+    }
 
+    .score {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: #000;
+      font-family: monospace;
+      font-size: 18px;
+    }
+
+    .dino {
+      position: absolute;
+      left: 70px;
+      bottom: 35px;
+      font-size: 48px;
+      line-height: 1;
+      z-index: 5;
+      filter: grayscale(1);
+      transform: scaleX(-1);
+    }
+
+    .dino.jump {
+      animation: jump 0.75s ease-out;
+    }
+
+    .ground {
+      position: absolute;
+      left: 0;
+      bottom: 30px;
+      width: 100%;
+      height: 3px;
+      background: #000;
+    }
+
+    .obstacle {
+      position: absolute;
+      right: -80px;
+      bottom: 33px;
+      font-size: 45px;
+      line-height: 1;
+      z-index: 4;
+      filter: grayscale(1);
+    }
+
+    .tree {
+      position: absolute;
+      right: -100px;
+      bottom: 33px;
+      font-size: 38px;
+      filter: grayscale(1);
+    }
+
+    .tree.one {
+      bottom: 36px;
+    }
+
+    .tree.two {
+      bottom: 34px;
+    }
+
+    .game-message {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 48%;
+      text-align: center;
+      color: #000;
+      font-size: 14px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    @keyframes jump {
+      0% {
+        bottom: 35px;
+      }
+
+      50% {
+        bottom: 145px;
+      }
+
+      100% {
+        bottom: 35px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -139,208 +247,345 @@
 
   <div class="tabs">
 
+    <button class="tab dino-tab">
+      ◈
+    </button>
 
-<button class="tab active" onclick="showTab('links', this)">
-  Zuno
-</button>
+    <button
+      class="tab zuno-hidden"
+      onclick="zunoClick()"
+    >
+      Zuno
+    </button>
 
-<!-- <button class="tab" onclick="showTab('files', this)">
-  Vexa
-</button> -->
-
-<!-- <button class="tab vexa-hidden" onclick="showTab('files', this)" > Vexa </button> -->
-
-<button
-  class="tab vexa-hidden"
-  onclick="vexaClick()"
->
-  Vexa
-</button>
-<script>
-  let vexaClicks = 0;
-  let vexaTimer;
-
-  function vexaClick() {
-    vexaClicks++;
-
-    clearTimeout(vexaTimer);
-
-    if (vexaClicks >= 5) {
-      showTab("files", document.querySelector(".vexa-hidden"));
-      vexaClicks = 0;
-      return;
-    }
-
-    vexaTimer = setTimeout(() => {
-      vexaClicks = 0;
-    }, 1000);
-  }
-
-  function showTab(name, button) {
-    document.querySelectorAll(".panel").forEach(panel => {
-      panel.classList.remove("active");
-    });
-
-    document.querySelectorAll(".tab").forEach(tab => {
-      tab.classList.remove("active");
-    });
-
-    document.getElementById(name).classList.add("active");
-    button.classList.add("active");
-  }
-</script>
-
-
+    <button
+      class="tab vexa-hidden"
+      onclick="vexaClick()"
+    >
+      Vexa
+    </button>
 
   </div>
 
-  <div id="links" class="panel active">
+  <div id="dino" class="panel active">
 
-
-<form action="/links" method="POST">
-
-  <input
-    type="text"
-    name="title"
-    placeholder="Kivo"
-  >
-
-  <input
-    type="url"
-    name="url"
-    placeholder="Axen"
-    required
-  >
-
-  <button type="submit">
-    Naro
-  </button>
-
-</form>
-
-<% const links = items.filter(item => item.type === "link"); %>
-
-<% if (links.length === 0) { %>
-  <p>Vuno</p>
-<% } %>
-
-<% links.forEach(item => { %>
-
-  <div class="item">
-
-    <a
-      href="<%= item.url %>"
-      target="_blank"
-      rel="noopener noreferrer"
+    <div
+      class="dino-game"
+      onclick="jump()"
     >
-      <%= item.title || item.url %>
-    </a>
 
-    <% if (item.title) { %>
-      <p><%= item.url %></p>
-    <% } %>
+      <div class="score">
+        00000
+      </div>
 
-    <form
-      class="delete"
-      action="/items/<%= item.id %>/delete"
-      method="POST"
-    >
+      <div class="dino">
+        🦖
+      </div>
+
+      <div class="obstacle">
+        🌵
+      </div>
+
+      <div class="tree one">
+        🌲
+      </div>
+
+      <div class="tree two">
+        🌳
+      </div>
+
+      <div class="ground"></div>
+
+      <div class="game-message">
+        SPACE
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="links" class="panel">
+
+    <form action="/links" method="POST">
+
+      <input
+        type="text"
+        name="title"
+        placeholder="Kivo"
+      >
+
+      <input
+        type="url"
+        name="url"
+        placeholder="Axen"
+        required
+      >
 
       <button type="submit">
-        Rexo
+        Naro
       </button>
 
     </form>
 
-  </div>
+    <% const links = items.filter(item => item.type === "link"); %>
 
-<% }) %>
+    <% if (links.length === 0) { %>
+      <p>Vuno</p>
+    <% } %>
 
+    <% links.forEach(item => { %>
+
+      <div class="item">
+
+        <a
+          href="<%= item.url %>"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <%= item.title || item.url %>
+        </a>
+
+        <% if (item.title) { %>
+          <p><%= item.url %></p>
+        <% } %>
+
+        <form
+          class="delete"
+          action="/items/<%= item.id %>/delete"
+          method="POST"
+        >
+
+          <button type="submit">
+            Rexo
+          </button>
+
+        </form>
+
+      </div>
+
+    <% }) %>
 
   </div>
 
   <div id="files" class="panel">
 
+    <form
+      action="/files"
+      method="POST"
+      enctype="multipart/form-data"
+    >
 
-<form
-  action="/files"
-  method="POST"
-  enctype="multipart/form-data"
->
-
-  <input
-    type="file"
-    name="file"
-    required
-  >
-
-  <button type="submit">
-    Tavo
-  </button>
-
-</form>
-
-<% const files = items.filter(item => item.type === "file"); %>
-
-<% if (files.length === 0) { %>
-  <p>Vuno</p>
-<% } %>
-
-<% files.forEach(item => { %>
-
-  <div class="item">
-
-    <div class="info">
-      <%= item.mimetype %>
-      ·
-      <%= (Number(item.size) / 1024 / 1024).toFixed(2) %> MB
-    </div>
-
-    <div class="actions">
-
-      <a
-        class="download"
-        href="/files/<%= item.id %>"
-      >
-        Xero
-      </a>
-
-      <form
-        class="delete"
-        action="/items/<%= item.id %>/delete"
-        method="POST"
+      <input
+        type="file"
+        name="file"
+        required
       >
 
-        <button type="submit">
-          Miro
-        </button>
+      <button type="submit">
+        Tavo
+      </button>
 
-      </form>
+    </form>
 
-    </div>
+    <% const files = items.filter(item => item.type === "file"); %>
 
-  </div>
+    <% if (files.length === 0) { %>
+      <p>Vuno</p>
+    <% } %>
 
-<% }) %>
+    <% files.forEach(item => { %>
 
+      <div class="item">
+
+        <div class="info">
+          <%= item.mimetype %>
+          ·
+          <%= (Number(item.size) / 1024 / 1024).toFixed(2) %> MB
+        </div>
+
+        <div class="actions">
+
+          <a
+            class="download"
+            href="/files/<%= item.id %>"
+          >
+            Xero
+          </a>
+
+          <form
+            class="delete"
+            action="/items/<%= item.id %>/delete"
+            method="POST"
+          >
+
+            <button type="submit">
+              Miro
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    <% }) %>
 
   </div>
 
   <script>
-    function showTab(name, button) {
+    let zunoClicks = 0;
+    let vexaClicks = 0;
+
+    let zunoTimer;
+    let vexaTimer;
+
+    function zunoClick() {
+      zunoClicks++;
+
+      clearTimeout(zunoTimer);
+
+      if (zunoClicks >= 5) {
+        showTab("links");
+        zunoClicks = 0;
+        return;
+      }
+
+      zunoTimer = setTimeout(() => {
+        zunoClicks = 0;
+      }, 1000);
+    }
+
+    function vexaClick() {
+      vexaClicks++;
+
+      clearTimeout(vexaTimer);
+
+      if (vexaClicks >= 5) {
+        showTab("files");
+        vexaClicks = 0;
+        return;
+      }
+
+      vexaTimer = setTimeout(() => {
+        vexaClicks = 0;
+      }, 1000);
+    }
+
+    function showTab(name) {
       document.querySelectorAll(".panel").forEach(panel => {
         panel.classList.remove("active");
       });
 
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.classList.remove("active");
-      });
-
       document.getElementById(name).classList.add("active");
-      button.classList.add("active");
     }
+
+    const dino = document.querySelector(".dino");
+    const obstacle = document.querySelector(".obstacle");
+    const trees = document.querySelectorAll(".tree");
+    const score = document.querySelector(".score");
+
+    let jumping = false;
+    let gameOver = false;
+    let points = 0;
+    let obstaclePosition = -80;
+    let treePosition = -100;
+    let speed = 4.5;
+
+    function jump() {
+      if (jumping || gameOver) {
+        return;
+      }
+
+      jumping = true;
+      dino.classList.add("jump");
+
+      setTimeout(() => {
+        dino.classList.remove("jump");
+        jumping = false;
+      }, 750);
+    }
+
+    document.addEventListener("keydown", event => {
+      if (event.code === "Space") {
+        event.preventDefault();
+        jump();
+      }
+    });
+
+    function collision() {
+      const dinoRect = dino.getBoundingClientRect();
+      const obstacleRect = obstacle.getBoundingClientRect();
+
+      return (
+        dinoRect.right - 12 > obstacleRect.left &&
+        dinoRect.left + 12 < obstacleRect.right &&
+        dinoRect.bottom - 8 > obstacleRect.top &&
+        dinoRect.top + 8 < obstacleRect.bottom
+      );
+    }
+
+    function resetGame() {
+      gameOver = false;
+      jumping = false;
+      points = 0;
+      speed = 4.5;
+      obstaclePosition = -80;
+      treePosition = -100;
+
+      obstacle.style.right = "-80px";
+
+      trees[0].style.right = "-100px";
+      trees[1].style.right = "-350px";
+
+      score.textContent = "00000";
+    }
+
+    function gameLoop() {
+      if (!gameOver) {
+        obstaclePosition += speed;
+        treePosition += speed * 0.3;
+
+        obstacle.style.right = obstaclePosition + "px";
+
+        trees[0].style.right = treePosition + "px";
+        trees[1].style.right = treePosition - 300 + "px";
+
+        if (obstaclePosition > window.innerWidth + 100) {
+          obstaclePosition = -80;
+          points += 10;
+
+          if (speed < 6) {
+            speed += 0.05;
+          }
+        }
+
+        if (treePosition > window.innerWidth + 150) {
+          treePosition = -100;
+        }
+
+        if (collision()) {
+          gameOver = true;
+
+          setTimeout(resetGame, 1200);
+        }
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    setInterval(() => {
+      if (!gameOver) {
+        points++;
+
+        score.textContent =
+          String(points).padStart(5, "0");
+      }
+    }, 150);
+
+    gameLoop();
   </script>
 
 </body>
 
 </html>
+
