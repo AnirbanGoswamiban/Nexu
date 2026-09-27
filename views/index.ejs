@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ddd;
+    }
+
+    .tab.active {
+      background: #222;
+      color: white;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    form > button {
+      background: #222;
+      color: white;
+    }
+
+    .item {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+
+    .item a {
+      color: #222;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    .item p {
+      color: #666;
+      word-break: break-all;
+    }
+
+    .info {
+      color: #777;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .download {
+      display: inline-block;
+      padding: 10px 15px;
+      background: #222;
+      color: white !important;
+      border-radius: 6px;
+      font-size: 14px !important;
+    }
+
+    .delete {
+      padding: 0;
+      margin: 0;
+    }
+
+    .delete button {
+      background: #ddd;
+      color: #222;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🔗 Share</h1>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('links', this)">
+      Links
+    </button>
+
+    <button class="tab" onclick="showTab('files', this)">
+      Files
+    </button>
+  </div>
+
+  <div id="links" class="panel active">
+
+    <form action="/links" method="POST">
+      <input
+        type="text"
+        name="title"
+        placeholder="Title (optional)"
+      >
+
+      <input
+        type="url"
+        name="url"
+        placeholder="https://example.com"
+        required
+      >
+
+      <button type="submit">
+        Add Link
+      </button>
+    </form>
+
+    <% const links = items.filter(item => item.type === "link"); %>
+
+    <% if (links.length === 0) { %>
+      <p>No links yet.</p>
+    <% } %>
+
+    <% links.forEach(item => { %>
+
+      <div class="item">
+
+        <a
+          href="<%= item.url %>"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <%= item.title || item.url %>
+        </a>
+
+        <% if (item.title) { %>
+          <p><%= item.url %></p>
+        <% } %>
+
+        <form
+          class="delete"
+          action="/items/<%= item.id %>/delete"
+          method="POST"
+        >
+          <button type="submit">
+            Delete
+          </button>
+        </form>
+
+      </div>
+
+    <% }) %>
+
+  </div>
+
+  <div id="files" class="panel">
+
+    <form
+      action="/files"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <input
+        type="file"
+        name="file"
+        required
+      >
+
+      <button type="submit">
+        Upload File
+      </button>
+    </form>
+
+    <% const files = items.filter(item => item.type === "file"); %>
+
+    <% if (files.length === 0) { %>
+      <p>No files yet.</p>
+    <% } %>
+
+    <% files.forEach(item => { %>
+
+      <div class="item">
+
+        <a href="/files/<%= item.id %>">
+          <%= item.filename %>
+        </a>
+
+        <div class="info">
+          <%= item.mimetype %>
+          ·
+          <%= (Number(item.size) / 1024 / 1024).toFixed(2) %> MB
+        </div>
+
+        <div class="actions">
+
+          <a
+            class="download"
+            href="/files/<%= item.id %>"
+          >
+            Download
+          </a>
+
+          <form
+            class="delete"
+            action="/items/<%= item.id %>/delete"
+            method="POST"
+          >
+            <button type="submit">
+              Delete
+            </button>
+          </form>
+
+        </div>
+
+      </div>
+
+    <% }) %>
+
+  </div>
+
+  <script>
+    function showTab(name, button) {
+      document.querySelectorAll(".panel").forEach(panel => {
+        panel.classList.remove("active");
+      });
+
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.remove("active");
+      });
+
+      document.getElementById(name).classList.add("active");
+      button.classList.add("active");
+    }
+  </script>
+
+</body>
+
+</html>
