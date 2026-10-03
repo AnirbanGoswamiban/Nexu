@@ -126,7 +126,62 @@ app.post("/items/:id/delete", async (req, res) => {
     res.status(500).send("Could not delete item");
   }
 });
+app.post("/videos", upload.single("video"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("Video is required");
+  }
 
+  if (!req.file.mimetype.startsWith("video/")) {
+    return res.status(400).send("Only video files are allowed");
+  }
+
+  try {
+    await client.query(
+      `INSERT INTO items
+       (type, title, filename, mimetype, size, data)
+       VALUES ('video', $1, $2, $3, $4, $5)`,
+      [
+        req.body.title || null,
+        req.file.originalname,
+        req.file.mimetype,
+        req.file.size,
+        req.file.buffer,
+      ]
+    );
+
+    res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Could not save video");
+  }
+});
+app.get("/videos/:id", async (req, res) => {
+  try {
+    const result = await client.query(
+      `SELECT filename, mimetype, data
+       FROM items
+       WHERE id = $1 AND type = 'video'`,
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).send("Video not found");
+    }
+
+    const { filename, mimetype, data } = result.rows[0];
+
+    res.setHeader("Content-Type", mimetype);
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${filename.replace(/"/g, "")}"`
+    );
+
+    res.send(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Could not load video");
+  }
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

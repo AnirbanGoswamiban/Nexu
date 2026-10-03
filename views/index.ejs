@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,7 +84,7 @@
       cursor: pointer;
     }
 
-    form > button {
+    form>button {
       background: #000;
       color: #fff;
     }
@@ -251,28 +250,23 @@
       ◈
     </button>
 
-    <button
-      class="tab zuno-hidden"
-      onclick="zunoClick()"
-    >
+    <button class="tab zuno-hidden" onclick="zunoClick()">
       Zuno
     </button>
 
-    <button
-      class="tab vexa-hidden"
-      onclick="vexaClick()"
-    >
+    <button class="tab vexa-hidden" onclick="vexaClick()">
       Vexa
+    </button>
+
+    <button class="tab" onclick="showTab('videos')">
+      Vixeo
     </button>
 
   </div>
 
   <div id="dino" class="panel active">
 
-    <div
-      class="dino-game"
-      onclick="jump()"
-    >
+    <div class="dino-game" onclick="jump()">
 
       <div class="score">
         00000
@@ -308,18 +302,9 @@
 
     <form action="/links" method="POST">
 
-      <input
-        type="text"
-        name="title"
-        placeholder="Kivo"
-      >
+      <input type="text" name="title" placeholder="Kivo">
 
-      <input
-        type="url"
-        name="url"
-        placeholder="Axen"
-        required
-      >
+      <input type="url" name="url" placeholder="Axen" required>
 
       <button type="submit">
         Naro
@@ -327,59 +312,45 @@
 
     </form>
 
-    <% const links = items.filter(item => item.type === "link"); %>
+    <% const links=items.filter(item=> item.type === "link"); %>
 
-    <% if (links.length === 0) { %>
-      <p>Vuno</p>
-    <% } %>
-
-    <% links.forEach(item => { %>
-
-      <div class="item">
-
-        <a
-          href="<%= item.url %>"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <%= item.title || item.url %>
-        </a>
-
-        <% if (item.title) { %>
-          <p><%= item.url %></p>
+      <% if (links.length===0) { %>
+        <p>Vuno</p>
         <% } %>
 
-        <form
-          class="delete"
-          action="/items/<%= item.id %>/delete"
-          method="POST"
-        >
+          <% links.forEach(item=> { %>
 
-          <button type="submit">
-            Rexo
-          </button>
+            <div class="item">
 
-        </form>
+              <a href="<%= item.url %>" target="_blank" rel="noopener noreferrer">
+                <%= item.title || item.url %>
+              </a>
 
-      </div>
+              <% if (item.title) { %>
+                <p>
+                  <%= item.url %>
+                </p>
+                <% } %>
 
-    <% }) %>
+                  <form class="delete" action="/items/<%= item.id %>/delete" method="POST">
+
+                    <button type="submit">
+                      Rexo
+                    </button>
+
+                  </form>
+
+            </div>
+
+            <% }) %>
 
   </div>
 
   <div id="files" class="panel">
 
-    <form
-      action="/files"
-      method="POST"
-      enctype="multipart/form-data"
-    >
+    <form action="/files" method="POST" enctype="multipart/form-data">
 
-      <input
-        type="file"
-        name="file"
-        required
-      >
+      <input type="file" name="file" required>
 
       <button type="submit">
         Tavo
@@ -387,48 +358,104 @@
 
     </form>
 
-    <% const files = items.filter(item => item.type === "file"); %>
+    <% const files=items.filter(item=> item.type === "file"); %>
 
-    <% if (files.length === 0) { %>
-      <p>Vuno</p>
-    <% } %>
+      <% if (files.length===0) { %>
+        <p>Vuno</p>
+        <% } %>
 
-    <% files.forEach(item => { %>
+          <% files.forEach(item=> { %>
 
-      <div class="item">
+            <div class="item">
 
-        <div class="info">
-          <%= item.mimetype %>
-          ·
-          <%= (Number(item.size) / 1024 / 1024).toFixed(2) %> MB
-        </div>
+              <div class="info">
+                <%= item.mimetype %>
+                  ·
+                  <%= (Number(item.size) / 1024 / 1024).toFixed(2) %> MB
+              </div>
 
-        <div class="actions">
+              <div class="actions">
 
-          <a
-            class="download"
-            href="/files/<%= item.id %>"
-          >
-            Xero
-          </a>
+                <a class="download" href="/files/<%= item.id %>">
+                  Xero
+                </a>
 
-          <form
-            class="delete"
-            action="/items/<%= item.id %>/delete"
-            method="POST"
-          >
+                <form class="delete" action="/items/<%= item.id %>/delete" method="POST">
 
-            <button type="submit">
-              Miro
-            </button>
+                  <button type="submit">
+                    Miro
+                  </button>
 
-          </form>
+                </form>
 
-        </div>
+              </div>
 
-      </div>
+            </div>
 
-    <% }) %>
+            <% }) %>
+
+  </div>
+
+  <div id="videos" class="panel">
+
+    <form action="/videos" method="POST" enctype="multipart/form-data">
+
+      <input type="text" name="title" placeholder="Video title">
+
+      <input type="file" name="video" accept="video/*" required>
+
+      <button type="submit">
+        Upload Video
+      </button>
+
+    </form>
+
+    <% const videos=items.filter(item=> item.type === "video"); %>
+
+      <% if (videos.length===0) { %>
+        <p>No videos uploaded.</p>
+        <% } %>
+
+          <% videos.forEach(item=> { %>
+
+            <div class="item">
+
+              <% if (item.title) { %>
+                <h3>
+                  <%= item.title %>
+                </h3>
+                <% } %>
+
+                  <video controls preload="metadata" style="width: 100%; max-height: 400px; border-radius: 8px;">
+                    <source src="/videos/<%= item.id %>" type="<%= item.mimetype %>">
+                    Your browser does not support video playback.
+                  </video>
+
+                  <div class="info">
+                    <%= item.filename %>
+                      ·
+                      <%= item.mimetype %>
+                        ·
+                        <%= (Number(item.size) / 1024 / 1024).toFixed(2) %> MB
+                  </div>
+
+                  <div class="actions">
+
+                    <a class="download" href="/videos/<%= item.id %>">
+                      Open Video
+                    </a>
+
+                    <form class="delete" action="/items/<%= item.id %>/delete" method="POST">
+                      <button type="submit">
+                        Delete
+                      </button>
+                    </form>
+
+                  </div>
+
+            </div>
+
+            <% }) %>
 
   </div>
 
@@ -588,4 +615,3 @@
 </body>
 
 </html>
-
